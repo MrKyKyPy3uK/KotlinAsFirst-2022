@@ -148,7 +148,7 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (maxOf(a, b, c) > a + b + c - maxOf(a, b, c)) return -1
+    if (maxOf(a, b, c) >= a + b + c - maxOf(a, b, c)) return -1
     if (maxOf(a, b, c).pow(2) < ((a + b + c - maxOf(a, b, c)).pow(2) - 2.0 * a * b * c / (maxOf(a, b, c)))) return 0
     else if (maxOf(a, b, c).pow(2) > (a + b + c - maxOf(a, b, c)).pow(2) - 2.0 * a * b * c / (maxOf(a, b, c))) return 2
     else return 1
