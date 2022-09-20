@@ -72,10 +72,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if ((age % 100 in 5..20) || (age % 10 in 5..9) || (age % 10 == 0)) return "$age лет"
-    else if (age % 10 in 2..4) return "$age года"
-    else if (age % 10 == 1) return "$age год"
-    else return ""
+    var x: String = ""
+    when {
+        ((age % 100 in 5..20) || (age % 10 in 5..9) || (age % 10 == 0)) -> x = "$age лет"
+        (age % 10 in 2..4) -> x = "$age года"
+        (age % 10 == 1) -> x = "$age год"
+    }
+    return x
 }
 
 /**
@@ -148,9 +151,10 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (maxOf(a, b, c) >= a + b + c - maxOf(a, b, c)) return -1
-    if (maxOf(a, b, c).pow(2) < ((a + b + c - maxOf(a, b, c)).pow(2) - 2.0 * a * b * c / (maxOf(a, b, c)))) return 0
-    else if (maxOf(a, b, c).pow(2) > (a + b + c - maxOf(a, b, c)).pow(2) - 2.0 * a * b * c / (maxOf(a, b, c))) return 2
+    var m: Double = maxOf(a, b, c)
+    if (m >= a + b + c - m) return -1
+    if (m.pow(2) < ((a + b + c - m).pow(2) - 2.0 * a * b * c / (m))) return 0
+    else if (m.pow(2) > (a + b + c - m).pow(2) - 2.0 * a * b * c / (m)) return 2
     else return 1
 }
 
