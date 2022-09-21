@@ -72,7 +72,18 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var length: Int = 0
+    var num: Int = n
+    if (n == 0) return 1
+    else {
+        while (num != 0) {
+            length += 1
+            num /= 10
+        }
+        return length
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +91,42 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var res:Int = 0
+    var first:Int = 1
+    var second:Int = 1
+    if (n == 1 || n == 2) return 1
+    for (i in 1..n-2) {
+        res = first + second
+        first = second
+        second = res
+    }
+    return res
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    for (i in 2..n/2) {
+        if (n % i == 0) return i
+    }
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    for (i in 2..n/2) {
+        if (n % i == 0) return n / i
+    }
+    return 1
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +144,14 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    fun revers(k: Int, step: Int): Int {
+        if (k == 1) return step
+        if (k % 2 == 0) return revers(k / 2, step + 1)
+        else return revers(3 * k + 1, step + 1)
+    }
+    return revers(x, 0)
+}
 
 /**
  * Средняя (3 балла)

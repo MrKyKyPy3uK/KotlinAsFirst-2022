@@ -71,14 +71,10 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    var x: String = ""
-    when {
-        ((age % 100 in 5..20) || (age % 10 in 5..9) || (age % 10 == 0)) -> x = "$age лет"
-        (age % 10 in 2..4) -> x = "$age года"
-        (age % 10 == 1) -> x = "$age год"
-    }
-    return x
+fun ageDescription(age: Int): String = when {
+    ((age % 100 in 5..20) || (age % 10 in 5..9) || (age % 10 == 0)) -> "$age лет"
+    (age % 10 in 2..4) -> "$age года"
+    else -> "$age год"
 }
 
 /**
@@ -94,9 +90,11 @@ fun timeForHalfWay(
     t3: Double, v3: Double
 ): Double {
     val length = t1 * v1 + t2 * v2 + t3 * v3
-    return if (t1 * v1 > length / 2.0) length / 2.0 / v1
-    else if (t1 * v1 + t2 * v2 > length / 2.0) t1 + (length / 2.0 - t1 * v1) / v2
-    else t1 + t2 + (length / 2.0 - t1 * v1 - t2 * v2) / v3
+    return when {
+        (t1 * v1 > length / 2.0) -> length / 2.0 / v1
+        (t1 * v1 + t2 * v2 > length / 2.0) -> t1 + (length / 2.0 - t1 * v1) / v2
+        else -> t1 + t2 + (length / 2.0 - t1 * v1 - t2 * v2) / v3
+    }
 }
 
 /**
@@ -151,11 +149,13 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var m: Double = maxOf(a, b, c)
-    if (m >= a + b + c - m) return -1
-    if (m.pow(2) < ((a + b + c - m).pow(2) - 2.0 * a * b * c / (m))) return 0
-    else if (m.pow(2) > (a + b + c - m).pow(2) - 2.0 * a * b * c / (m)) return 2
-    else return 1
+    val m = maxOf(a, b, c)
+    return when {
+        (m >= a + b + c - m) -> -1
+        (m.pow(2) < ((a + b + c - m).pow(2) - 2.0 * a * b * c / (m))) -> 0
+        (m.pow(2) > (a + b + c - m).pow(2) - 2.0 * a * b * c / (m)) -> 2
+        else -> 1
+    }
 }
 
 /**
@@ -167,12 +167,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (c < a) {
-        if (d < a) return -1
-        else if (d in a..b) return d - a
-        else return b - a
-    } else if (c in a..b) {
-        if (d in c..b) return d - c
-        else return b - c
-    } else return -1
+    return when {
+        c < a && d < a -> -1
+        c < a && d in a..b -> d - a
+        c < a -> b - a
+        c in a..b && d in c..b -> d - c
+        c in a..b && d > b -> b - c
+        else -> -1
+    }
 }
