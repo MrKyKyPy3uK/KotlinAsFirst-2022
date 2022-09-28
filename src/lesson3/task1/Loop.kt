@@ -2,7 +2,9 @@
 
 package lesson3.task1
 
+import kotlin.math.round
 import kotlin.math.sqrt
+import kotlin.math.roundToInt
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -76,13 +78,11 @@ fun digitNumber(n: Int): Int {
     var length: Int = 0
     var num: Int = n
     if (n == 0) return 1
-    else {
-        while (num != 0) {
-            length += 1
-            num /= 10
-        }
-        return length
+    while (num != 0) {
+        length += 1
+        num /= 10
     }
+    return length
 }
 
 /**
@@ -92,11 +92,11 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    var res:Int = 0
-    var first:Int = 1
-    var second:Int = 1
+    var res = 0
+    var first = 1
+    var second = 1
     if (n == 1 || n == 2) return 1
-    for (i in 1..n-2) {
+    for (i in 1..n - 2) {
         res = first + second
         first = second
         second = res
@@ -110,7 +110,7 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..n/2) {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
         if (n % i == 0) return i
     }
     return n
@@ -145,12 +145,14 @@ fun maxDivisor(n: Int): Int {
  * этого для какого-либо начального X > 0.
  */
 fun collatzSteps(x: Int): Int {
-    fun revers(k: Int, step: Int): Int {
-        if (k == 1) return step
-        if (k % 2 == 0) return revers(k / 2, step + 1)
-        else return revers(3 * k + 1, step + 1)
+    var current = x
+    var steps = 0
+    while (current != 1) {
+        if (current % 2 == 0) current /= 2
+        else current = current * 3 + 1
+        steps += 1
     }
-    return revers(x, 0)
+    return steps
 }
 
 /**

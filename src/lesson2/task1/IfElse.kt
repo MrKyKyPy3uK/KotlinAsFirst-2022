@@ -72,8 +72,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    ((age % 100 in 5..20) || (age % 10 in 5..9) || (age % 10 == 0)) -> "$age лет"
-    (age % 10 in 2..4) -> "$age года"
+    age % 100 in 5..20 || age % 10 in 5..9 || age % 10 == 0 -> "$age лет"
+    age % 10 in 2..4 -> "$age года"
     else -> "$age год"
 }
 
@@ -91,8 +91,8 @@ fun timeForHalfWay(
 ): Double {
     val length = t1 * v1 + t2 * v2 + t3 * v3
     return when {
-        (t1 * v1 > length / 2.0) -> length / 2.0 / v1
-        (t1 * v1 + t2 * v2 > length / 2.0) -> t1 + (length / 2.0 - t1 * v1) / v2
+        t1 * v1 > length / 2.0 -> length / 2.0 / v1
+        t1 * v1 + t2 * v2 > length / 2.0 -> t1 + (length / 2.0 - t1 * v1) / v2
         else -> t1 + t2 + (length / 2.0 - t1 * v1 - t2 * v2) / v3
     }
 }
@@ -111,11 +111,14 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    if ((kingX == rookX1) || (kingY == rookY1)) {
-        if ((kingX == rookX2) || (kingY == rookY2)) return 3
-        else return 1
-    } else if ((kingX == rookX2) || (kingY == rookY2)) return 2
-    else return 0
+    val first = (kingX == rookX1) || (kingY == rookY1)
+    val second = (kingX == rookX2) || (kingY == rookY2)
+    if (first && second) return 3
+    else {
+        if (first) return 1
+        if (second) return 2
+        return 0
+    }
 }
 
 /**
@@ -134,9 +137,9 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     if ((kingX == rookX) || (kingY == rookY)) {
-        if (abs(bishopX-kingX) == abs(bishopY-kingY)) return 3
+        if (abs(bishopX - kingX) == abs(bishopY - kingY)) return 3
         else return 1
-    } else if (abs(bishopX-kingX) == abs(bishopY-kingY)) return 2
+    } else if (abs(bishopX - kingX) == abs(bishopY - kingY)) return 2
     return 0
 }
 
@@ -151,9 +154,9 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val m = maxOf(a, b, c)
     return when {
-        (m >= a + b + c - m) -> -1
-        (m.pow(2) < ((a + b + c - m).pow(2) - 2.0 * a * b * c / (m))) -> 0
-        (m.pow(2) > (a + b + c - m).pow(2) - 2.0 * a * b * c / (m)) -> 2
+        m >= a + b + c - m -> -1
+        m.pow(2) < (a + b + c - m).pow(2) - 2.0 * a * b * c / (m) -> 0
+        m.pow(2) > (a + b + c - m).pow(2) - 2.0 * a * b * c / (m) -> 2
         else -> 1
     }
 }
@@ -166,13 +169,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return when {
-        c < a && d < a -> -1
-        c < a && d in a..b -> d - a
-        c < a -> b - a
-        c in a..b && d in c..b -> d - c
-        c in a..b && d > b -> b - c
-        else -> -1
-    }
+fun segmentLength(a: Int, b: Int, c: Int, d: Int) = when {
+    c < a && d < a -> -1
+    c < a && d in a..b -> d - a
+    c < a -> b - a
+    c in a..b && d in c..b -> d - c
+    c in a..b && d > b -> b - c
+    else -> -1
 }
