@@ -2,9 +2,9 @@
 
 package lesson3.task1
 
-import kotlin.math.round
+import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlin.math.roundToInt
+import kotlin.math.abs
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -161,7 +161,15 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var num1 = m
+    var num2 = n
+    while (num1 != num2) {
+        if (num1 > num2) num1 -= num2
+        else num2 -= num1
+    }
+    return m * n / num1
+}
 
 /**
  * Средняя (3 балла)
@@ -172,8 +180,8 @@ fun lcm(m: Int, n: Int): Int = TODO()
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     if (m % n == 0 || n % m == 0) return false
-    for (i in 2..m / 2) {
-        if (n % i == 0) return false
+    for (i in 2..sqrt(m.toDouble()).toInt()) {
+        if (n % i == 0 && m % i == 0) return false
     }
     return true
 }
@@ -185,7 +193,16 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var start = n
+    var final = 0
+    while (start != 0) {
+        final *= 10
+        final += (start % 10)
+        start /= 10
+    }
+    return final
+}
 
 /**
  * Средняя (3 балла)
@@ -196,7 +213,7 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя (3 балла)
@@ -206,7 +223,16 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var current = n
+    while (current != 0) {
+        if (current % 10 != n % 10) {
+            return true
+        }
+        current /= 10
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -217,7 +243,18 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var current = x
+    var sinus = 0.0
+    var i = 1.0
+    while (abs(current) >= eps) {
+        sinus += current
+        current *= -x.pow(2) / (i + 1.0) / (i + 2.0)
+        i += 2.0
+    }
+    sinus += current
+    return sinus
+}
 
 /**
  * Средняя (4 балла)
@@ -239,7 +276,23 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var current: Int
+    var i = 1
+    var length = 0
+    while (length < n) {
+        current = revert(i * i * 10 + 1)
+        while (current >= 10) {
+            length += 1
+            if (length == n) {
+                return current % 10
+            }
+            current /= 10
+        }
+        i += 1
+    }
+    return 0
+}
 
 /**
  * Сложная (5 баллов)
@@ -250,4 +303,20 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var i = 1
+    var length = 0
+    var current = 0
+    while (length < n) {
+        current = revert(fib(i) * 10 + 1)
+        while (current >= 10) {
+            length += 1
+            if (length == n) {
+                return current % 10
+            }
+            current /= 10
+        }
+        i += 1
+    }
+    return 0
+}
