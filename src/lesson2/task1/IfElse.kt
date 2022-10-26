@@ -139,11 +139,12 @@ fun rookOrBishopThreatens(
     val deltaX = bishopX - kingX
     val deltaY = bishopY - kingY
     val equal = abs(deltaX) == abs(deltaY)
-    if ((kingX == rookX) || (kingY == rookY)) {
-        if (equal) return 3
-        else return 1
-    } else if (equal) return 2
-    return 0
+    return when {
+        ((kingX == rookX) || (kingY == rookY)) && equal -> 3
+        (kingX == rookX) || (kingY == rookY) -> 1
+        equal -> 2
+        else -> 0
+    }
 }
 
 /**
