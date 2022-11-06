@@ -334,7 +334,7 @@ fun roman(n: Int): String = TODO()
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var first = listOf<String>(
+    val first = listOf<String>(
         "сто",
         "двести",
         "триста",
@@ -350,7 +350,7 @@ fun russian(n: Int): String {
         "тысяч",
         "тысячи",
     )
-    var third = listOf<String>(
+    val third = listOf<String>(
         "",
         "один",
         "два",
@@ -362,7 +362,7 @@ fun russian(n: Int): String {
         "восемь",
         "девять",
     )
-    var fourth = listOf<String>(
+    val fourth = listOf<String>(
         "десять",
         "двадцать",
         "тридцать",
@@ -374,7 +374,7 @@ fun russian(n: Int): String {
         "девяносто",
         "сто"
     )
-    var fifth = listOf<String>(
+    val fifth = listOf<String>(
         "десять",
         "одиннадцать",
         "двенадцать",
@@ -386,28 +386,60 @@ fun russian(n: Int): String {
         "восемнадцать",
         "девятнадцать"
     )
+    val sixth = listOf<String>(
+        "одна",
+        "две",
+        "три",
+        "четыре"
+    )
 
     fun one(k: Int): String {
-        if (k == 0) return "ноль"
         return third[k]
     }
 
     fun two(k: Int): String {
-        if (n < 20) return fifth[n - 10]
-        else return fourth[n / 10 - 1] + " " + third[n % 10]
+        if (k < 10) return one(k)
+        else if (k < 20) return fifth[n - 10]
+        else return fourth[k / 10 - 1] + " " + third[k % 10]
     }
 
-    fun three(k: Int): String = first[k / 100 - 1] + " " + two(k % 100)
+    fun three(k: Int): String {
+        if (k / 100 == 0) return two(k)
+        else return first[k / 100 - 1] + " " + two(k % 100)
+    }
 
-    if (n.toString().length == 1) {
-        return one(n)
+    fun four(k: Int): String {
+        return when {
+            k / 1000 == 0 -> three(k)
+            k / 1000 == 1 -> "одна тысяча " + three(k % 1000)
+            k / 1000 in 2..4 -> sixth[k / 1000 - 1] + " тысячи " + three(k % 1000)
+            else -> third[k / 1000] + " тысяч " + three(k % 1000)
+        }
     }
-    if (n.toString().length == 2) {
-        return two(n)
+
+    fun five(k: Int): String {
+        return when {
+            k / 10000 == 0 -> four(k)
+            k / 10000 == 1 -> fifth[k / 1000 % 10] + " тысяч " + three(k % 1000)
+            k / 1000 % 10 == 0 -> fourth[k / 10000 - 1] + " тысяч " + three(k % 100)
+            else -> fourth[k / 10000 - 1] + " " + four(k % 10000)
+        }
     }
-    if (n.toString().length == 3) {
-        return three(n)
+
+    fun six(k: Int): String {
+        if (k % 100000 < 1000) return first[k / 100000 - 1] + " тысяч " + five(k % 100000)
+        else return first[k / 100000 - 1] + " " + five(k % 100000)
     }
-    return ""
+
+    if (n == 0) return "ноль"
+    return when (n.toString().length) {
+        1 -> one(n)
+        2 -> two(n)
+        3 -> three(n)
+        4 -> four(n)
+        5 -> five(n)
+        6 -> six(n)
+        else -> ""
+    }
     //В процессе решения
 }
