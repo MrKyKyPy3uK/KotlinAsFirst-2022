@@ -277,23 +277,15 @@ fun cos(x: Double, eps: Double): Double {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var current: Int
-    var i = 1
+    var i = 0.0
     var length = 0
+    var inCurrentNum = 0
     while (length < n) {
-        current = revert(i * i * 10 + 1)
-        while (current >= 10) {
-            length += 1
-            if (length == n) {
-                return current % 10
-            }
-            current /= 10
-        }
         i += 1
+        length += digitNumber(i.pow(2).toInt())
     }
-    return 0
+    return i.pow(2).toInt() / 10.0.pow(length - n).toInt() % 10
 }
-
 /**
  * Сложная (5 баллов)
  *

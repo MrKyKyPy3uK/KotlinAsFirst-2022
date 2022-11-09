@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import javax.swing.JToolBar.Separator
 import kotlin.math.sqrt
 import kotlin.math.pow
 
@@ -229,14 +230,8 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    val list = factorize(n)
-    var result = ""
-    for (elem in list) {
-        result += "$elem*"
-    }
-    return result.dropLast(1)
-}
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
+
 
 /**
  * Средняя (3 балла)
@@ -324,7 +319,21 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val letters = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val numbers = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    var result = ""
+    var current = n
+    while (current > 0) {
+        for (i in 0 until numbers.size) {
+            while (current >= numbers[i]) {
+                current -= numbers[i]
+                result += letters[i]
+            }
+        }
+    }
+    return result
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -432,7 +441,9 @@ fun russian(n: Int): String {
     }
 
     if (n == 0) return "ноль"
-    return when (n.toString().length) {
+
+    var result = ""
+    result = when (n.toString().length) {
         1 -> one(n)
         2 -> two(n)
         3 -> three(n)
@@ -441,5 +452,9 @@ fun russian(n: Int): String {
         6 -> six(n)
         else -> ""
     }
+    if (result.last() == Char(32)) {
+        result = result.dropLast(1)
+    }
+    return result
     //В процессе решения
 }
