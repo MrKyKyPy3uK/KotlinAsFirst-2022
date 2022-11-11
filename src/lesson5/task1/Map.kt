@@ -96,7 +96,18 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val result = mutableMapOf<Int, List<String>>()
+    for (i in 2..5) {
+        val current = mutableListOf<String>()
+        for ((name, grade) in grades) {
+            if (grade == i) current.add(name)
+        }
+        if (current.isNotEmpty()) result[i] = current.toList()
+    }
+    return result.toMap()
+
+}
 
 /**
  * Простая (2 балла)
@@ -108,7 +119,14 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    for ((first, second) in a) {
+        if ((b[first] == null) || (b[first] != a[first])) {
+            return false
+        }
+    }
+    return true
+}
 
 /**
  * Простая (2 балла)
@@ -208,7 +226,21 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val result = mutableMapOf<String, Int>()
+    for (elem in list) {
+        if (list.count { it == elem } == 1) continue
+        val current = result[elem]
+        if (current != null) result[elem] = current + 1
+        else result[elem] = 1
+    }
+    for ((first, second) in result) {
+        if (second == 1) {
+            result.remove(first)
+        }
+    }
+    return result.toMap()
+}
 
 /**
  * Средняя (3 балла)
@@ -222,7 +254,19 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean {
+    val result = mutableMapOf<String, List<Char>>()
+    for (elem in words) {
+        val current = mutableListOf<Char>()
+        elem.forEach { current.add(it) }
+        current.sort()
+        result[elem] = current
+    }
+    for (elem in result.values) {
+        if (result.values.count { it == elem } > 1) return true
+    }
+    return false
+}
 
 /**
  * Сложная (5 баллов)

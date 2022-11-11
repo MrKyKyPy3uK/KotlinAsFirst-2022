@@ -219,8 +219,9 @@ fun factorize(n: Int): List<Int> {
             current /= i
         }
     }
-    if (result.isEmpty()) return listOf(n)
-    else return result
+    if (current != 1) result.add(current)
+    if (result.isEmpty()) return listOf(n).sorted()
+    else return result.sorted()
 }
 
 /**
@@ -243,11 +244,12 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     val result = mutableListOf<Int>()
     var current = n
+    if (n == 0) return listOf(0)
     while (current != 0) {
         result.add(current % base)
         current /= base
     }
-    return result.reversed()
+    return result.reversed().toList()
 }
 
 /**
@@ -264,6 +266,7 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     val array = convert(n, base)
     var result = ""
+    if (n == 0) return "0"
     for (i in 0 until array.size) {
         if (array[i] > 9) result += (array[i] + 87).toChar().toString()
         else result += array[i].toString()
@@ -430,7 +433,7 @@ fun russian(n: Int): String {
         return when {
             k / 10000 == 0 -> four(k)
             k / 10000 == 1 -> fifth[k / 1000 % 10] + " тысяч " + three(k % 1000)
-            k / 1000 % 10 == 0 -> fourth[k / 10000 - 1] + " тысяч " + three(k % 100)
+            k / 1000 % 10 == 0 -> fourth[k / 10000 - 1] + " тысяч " + three(k % 1000)
             else -> fourth[k / 10000 - 1] + " " + four(k % 10000)
         }
     }
@@ -456,5 +459,4 @@ fun russian(n: Int): String {
         result = result.dropLast(1)
     }
     return result
-    //В процессе решения
 }
