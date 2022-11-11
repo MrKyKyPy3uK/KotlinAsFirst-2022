@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import lesson6.task1.twoDigitStr
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -98,12 +100,12 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val result = mutableMapOf<Int, List<String>>()
-    for (i in 2..5) {
+    for (elem in grades.values) {
         val current = mutableListOf<String>()
         for ((name, grade) in grades) {
-            if (grade == i) current.add(name)
+            if (grade == elem) current.add(name)
         }
-        if (current.isNotEmpty()) result[i] = current.toList()
+        if (current.isNotEmpty()) result[elem] = current.toList()
     }
     return result.toMap()
 
@@ -255,10 +257,13 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    val result = mutableMapOf<String, List<Char>>()
+    val result = mutableMapOf<String, List<String>>()
     for (elem in words) {
-        val current = mutableListOf<Char>()
-        elem.forEach { current.add(it) }
+        if (words.count { it == elem} > 1) return true
+    }
+    for (elem in words) {
+        val current = mutableListOf<String>()
+        elem.forEach { current.add(it.toString()) }
         current.sort()
         result[elem] = current
     }
