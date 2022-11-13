@@ -2,6 +2,10 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import kotlin.math.max
+import kotlin.reflect.typeOf
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -74,7 +78,32 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val current = str.split(" ")
+    if (current.size != 3) return ""
+    val months = listOf(
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    )
+    val second = months.indexOf(current[1]) + 1
+    return if (current[0].toInt() > daysInMonth(second, current[2].toInt()) || second == 0) ""
+    else String.format(
+        "%s.%s.%s",
+        twoDigitStr(current[0].toInt()),
+        twoDigitStr(second),
+        current[2]
+    )
+}
 
 /**
  * Средняя (4 балла)
@@ -114,7 +143,18 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val current = jumps.split(" ")
+    var maxim = 0
+    for (elem in current) {
+        if (elem !in listOf("%", "-")) {
+            if (elem.toIntOrNull() == null) return -1
+            else if (elem.toInt() > maxim) maxim = elem.toInt()
+        }
+    }
+    return if (maxim == 0) -1
+    else maxim
+}
 
 /**
  * Сложная (6 баллов)
