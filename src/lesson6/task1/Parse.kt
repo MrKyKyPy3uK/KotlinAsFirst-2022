@@ -80,7 +80,7 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val current = str.split(" ")
-    if (current.size != 3) return ""
+    if (current.size != 3 || current[0].toIntOrNull() == null || current[2].toIntOrNull() == null) return ""
     val months = listOf(
         "января",
         "февраля",
@@ -96,7 +96,7 @@ fun dateStrToDigit(str: String): String {
         "декабря"
     )
     val second = months.indexOf(current[1]) + 1
-    return if (current[0].toInt() > daysInMonth(second, current[2].toInt()) || second == 0) ""
+    return if (current[0].toInt() > daysInMonth(second, current[2].toInt()) || second == 0 || current[0].toInt() < 0) ""
     else String.format(
         "%s.%s.%s",
         twoDigitStr(current[0].toInt()),

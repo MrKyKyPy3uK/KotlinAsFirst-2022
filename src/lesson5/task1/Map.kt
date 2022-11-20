@@ -99,13 +99,11 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val result = mutableMapOf<Int, List<String>>()
-    for (elem in grades.values) {
-        val current = mutableListOf<String>()
-        for ((name, grade) in grades) {
-            if (grade == elem) current.add(name)
-        }
-        if (current.isNotEmpty()) result[elem] = current.toList()
+    val result = mutableMapOf<Int, MutableList<String>>()
+    for ((name, grade) in grades) {
+        if (grade in result.keys) {
+            result[grade]?.add(name)
+        } else result[grade] = mutableListOf(name)
     }
     return result.toMap()
 
@@ -123,7 +121,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     for ((first, second) in a) {
-        if ((b[first] == null) || (b[first] != a[first])) {
+        if ((b[first] == null) || (b[first] != second)) {
             return false
         }
     }
@@ -230,18 +228,18 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val result = mutableMapOf<String, Int>()
+    val toRemove = mutableListOf<String>()
     for (elem in list) {
-        if (list.count { it == elem } == 1) continue
         val current = result[elem]
-        if (current != null) result[elem] = current + 1
-        else result[elem] = 1
+        if (elem in result.keys && current != null) {
+            result[elem] = current + 1
+        } else result[elem] = 1
     }
     for ((first, second) in result) {
-        if (second == 1) {
-            result.remove(first)
-        }
+        if (second == 1) toRemove.add(first)
     }
-    return result.toMap()
+    for (elem in toRemove) result.remove(elem)
+    return result
 }
 
 /**
@@ -257,20 +255,15 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    val result = mutableMapOf<String, List<String>>()
-    for (elem in words) {
-        if (words.count { it == elem} > 1) return true
-    }
+    val result = mutableListOf<List<String>>()
+    if (words.distinct().size != words.size) return true
     for (elem in words) {
         val current = mutableListOf<String>()
         elem.forEach { current.add(it.toString()) }
         current.sort()
-        result[elem] = current
+        result.add(current)
     }
-    for (elem in result.values) {
-        if (result.values.count { it == elem } > 1) return true
-    }
-    return false
+    return result.distinct().size != result.size
 }
 
 /**

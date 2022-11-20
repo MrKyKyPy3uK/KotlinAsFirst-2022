@@ -3,8 +3,6 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import lesson1.task1.sqr
-import javax.swing.JToolBar.Separator
 import kotlin.math.sqrt
 import kotlin.math.pow
 
@@ -132,7 +130,7 @@ fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
  */
 fun mean(list: List<Double>): Double {
     if (list.isEmpty()) return 0.0
-    return (list.sum() / list.size)
+    return list.sum() / list.size
 }
 
 /**
@@ -159,7 +157,6 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    if (a.isEmpty() || b.isEmpty()) return 0
     var result = 0
     for (i in 0 until a.size) {
         result += a[i] * b[i]
@@ -249,7 +246,7 @@ fun convert(n: Int, base: Int): List<Int> {
         result.add(current % base)
         current /= base
     }
-    return result.reversed().toList()
+    return result.reversed()
 }
 
 /**
@@ -264,11 +261,39 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
+    val mass = listOf<String>(
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z"
+    )
     val array = convert(n, base)
     var result = ""
     if (n == 0) return "0"
     for (i in 0 until array.size) {
-        if (array[i] > 9) result += (array[i] + 87).toChar().toString()
+        if (array[i] > 9) result += mass[array[i] - 10]
         else result += array[i].toString()
     }
     return result
@@ -303,13 +328,41 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
+    val mass = listOf<String>(
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z"
+    )
     val new = str.reversed()
     var result = 0
     var current: Char
     for (i in 0 until new.length) {
         current = new[i]
-        if (current.isDigit()) result += (current.code - 48) * base.toDouble().pow(i).toInt()
-        else result += (current.code - 87) * base.toDouble().pow(i).toInt()
+        if (current.isDigit()) result += current.toString().toInt() * base.toDouble().pow(i).toInt()
+        else result += (mass.indexOf(current.toString()) + 10) * base.toDouble().pow(i).toInt()
     }
     return result
 }
@@ -325,13 +378,14 @@ fun decimalFromString(str: String, base: Int): Int {
 fun roman(n: Int): String {
     val letters = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     val numbers = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
-    var result = ""
     var current = n
-    while (current > 0) {
-        for (i in 0 until numbers.size) {
-            while (current >= numbers[i]) {
-                current -= numbers[i]
-                result += letters[i]
+    val result = buildString {
+        while (current > 0) {
+            for (i in 0 until numbers.size) {
+                while (current >= numbers[i]) {
+                    current -= numbers[i]
+                    append(letters[i])
+                }
             }
         }
     }
