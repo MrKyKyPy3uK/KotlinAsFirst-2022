@@ -2,7 +2,9 @@
 
 package lesson7.task1
 
+import ru.spbstu.wheels.out
 import java.io.File
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +65,13 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        if (line.isNotEmpty()) {
+            if (line[0].toString() != "_") writer.write(line + "\n")
+        } else writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -75,7 +83,23 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val writer = File(inputName).bufferedWriter()
+    val strings = File(inputName).readLines().toMutableList()
+    val result = mutableMapOf<String, Int>()
+    for (i in 0 until strings.size) strings[i] = strings[i].uppercase()
+    val str = strings.joinToString("")
+    for (elem in substrings) {
+        result[elem] = 0
+        for (i in 0 until str.length - elem.length + 1) {
+            if (str.substring(i, i + elem.length) == elem.uppercase()) {
+                result[elem] = result[elem]!! + 1
+            }
+        }
+    }
+    writer.close()
+    return result
+}
 
 
 /**
