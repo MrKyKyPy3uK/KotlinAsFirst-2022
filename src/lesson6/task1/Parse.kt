@@ -96,7 +96,7 @@ fun dateStrToDigit(str: String): String {
         "декабря"
     )
     val second = months.indexOf(current[1]) + 1
-    return if (current[0].toInt() > daysInMonth(second, current[2].toInt()) || second == 0 || current[0].toInt() < 0) ""
+    return if (current[0].toInt() !in 0..daysInMonth(second, current[2].toInt()) || second == 0) ""
     else String.format(
         "%s.%s.%s",
         twoDigitStr(current[0].toInt()),
