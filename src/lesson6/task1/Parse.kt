@@ -3,6 +3,8 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
+import kotlin.math.exp
 import kotlin.math.max
 import kotlin.reflect.typeOf
 
@@ -188,14 +190,31 @@ fun bestHighJump(jumps: String): Int = TODO()
 
 /**
  * Сложная (6 баллов)
- *
- * В строке представлено выражение вида "2 + 31 - 40 + 13",
+ * В строке представлено выражение вида "2
+ * + 31 - 40 + 13",
  * использующее целые положительные числа, плюсы и минусы, разделённые пробелами.
  * Наличие двух знаков подряд "13 + + 10" или двух чисел подряд "1 2" не допускается.
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val inp = expression.split(" ").toMutableList()
+    if (inp.first().toIntOrNull() == null || inp.last().toIntOrNull() == null) throw IllegalArgumentException()
+    inp.add("+")
+    inp.add("0")
+    var result = inp[0].toInt()
+    for (i in 0 until inp.size - 1) {
+        val first = inp[i].toIntOrNull()
+        val second = inp[i + 1].toIntOrNull()
+        if ((first == null && second == null) || (first != null && second != null)) throw IllegalArgumentException()
+        if ((inp[i].first().toString().toIntOrNull() == null || inp[i].last().toString().toIntOrNull() == null) && inp[i].length != 1) throw IllegalArgumentException()
+        if (first != null) {
+            if (inp[i + 1] == "+") result += inp[i + 2].toInt()
+            else if (inp[i + 1] == "-") result -= inp[i + 2].toInt()
+        }
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
