@@ -305,59 +305,63 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val strings = File(inputName).readLines().toMutableList()
+    var strings = File(inputName).readLines().toMutableList()
     strings.add("")
+    strings = (mutableListOf("") + strings) as MutableList<String>
+    println(strings)
     fun remakeI(inp: String): String {
-        val result = buildString {
-            val mass = inp.split("*")
-            for (i in 0 until mass.size) {
-                append(mass[i])
-                if (i != mass.size - 1) {
-                    if (i % 2 == 0) append("<i>")
-                    else append("</i>")
-                }
+        var result = inp
+        var count = true
+        while ("*" in result) {
+            if (count) {
+                result = result.replaceFirst("*", "<i>")
+                count = false
+            } else {
+                result = result.replaceFirst("*", "</i>")
+                count = true
             }
         }
         return result
     }
     fun remakeB(inp: String): String {
-        val result = buildString {
-            val mass = inp.split("**")
-            for (i in 0 until mass.size) {
-                append(mass[i])
-                if (i != mass.size - 1) {
-                    if (i % 2 == 0) append("<b>")
-                    else append("</b>")
-                }
+        var result = inp
+        var count = true
+        while ("**" in result) {
+            if (count) {
+                result = result.replaceFirst("**", "<b>")
+                count = false
+            } else {
+                result = result.replaceFirst("**", "</b>")
+                count = true
             }
         }
         return result
     }
 
     fun remakeS(inp: String): String {
-        val result = buildString {
-            val mass = inp.split("~~")
-            for (i in 0 until mass.size) {
-                append(mass[i])
-                if (i != mass.size - 1) {
-                    if (i % 2 == 0) append("<s>")
-                    else append("</s>")
-                }
+        var result = inp
+        var count = true
+        while ("~~" in result) {
+            if (count) {
+                result = result.replaceFirst("~~", "<s>")
+                count = false
+            } else {
+                result = result.replaceFirst("~~", "</s>")
+                count = true
             }
         }
         return result
     }
     writer.use {
-        writer.write("<html>\n<body>\n<p>\n")
+        writer.write("<html><body>")
         for (i in 0 until strings.size - 1) {
             val first = remakeS(remakeI(remakeB(strings[i])))
             val second = remakeS(remakeI(remakeB(strings[i + 1])))
             if (first.isNotEmpty()) {
-                if (second.isNotEmpty()) writer.appendLine(first)
-                else writer.appendLine("$first\n</p>")
+                if (second.isNotEmpty()) writer.write(first)
+                else writer.write("$first</p>")
             } else {
-                writer.appendLine()
-                if (second.isNotEmpty()) writer.appendLine("<p>")
+                if (second.isNotEmpty()) writer.write("<p>")
             }
         }
         writer.write("</body>\n</html>")
