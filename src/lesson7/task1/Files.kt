@@ -304,7 +304,62 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val strings = File(inputName).readLines().toMutableList()
+    strings.add("")
+    fun remakeI(inp: String): String {
+        val result = buildString {
+            val mass = inp.split("*")
+            for (i in 0 until mass.size / 2 * 2) {
+                append(mass[i])
+                if (i % 2 == 0) append("<i>")
+                else append("</i>")
+            }
+            append(mass.last())
+        }
+        return result
+    }
+
+    fun remakeB(inp: String): String {
+        val result = buildString {
+            val mass = inp.split("**")
+            for (i in 0 until mass.size / 2 * 2) {
+                append(mass[i])
+                if (i % 2 == 0) append("<b>")
+                else append("</b>")
+            }
+            append(mass.last())
+        }
+        return result
+    }
+
+    fun remakeS(inp: String): String {
+        val result = buildString {
+            val mass = inp.split("~~")
+            for (i in 0 until mass.size / 2 * 2) {
+                append(mass[i])
+                if (i % 2 == 0) append("<s>")
+                else append("</s>")
+            }
+            append(mass.last())
+        }
+        return result
+    }
+    writer.use {
+        writer.write("<html>\n<body>\n<p>\n")
+        for (i in 0 until strings.size - 1) {
+            val first = remakeS(remakeI(remakeB(strings[i])))
+            val second = remakeS(remakeI(remakeB(strings[i + 1])))
+            if (first.isNotEmpty()) {
+                if (second.isNotEmpty()) writer.appendLine(first)
+                else writer.appendLine("$first\n</p>")
+            } else {
+                writer.appendLine()
+                if (second.isNotEmpty()) writer.appendLine("<p>")
+            }
+        }
+        writer.write("</body>\n</html>")
+    }
 }
 
 /**
