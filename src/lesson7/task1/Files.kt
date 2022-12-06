@@ -305,65 +305,52 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var strings = File(inputName).readLines().toMutableList()
+    val strings = File(inputName).readLines().toMutableList()
     strings.add("")
-    strings = (mutableListOf("") + strings) as MutableList<String>
-    println(strings)
-    fun remakeI(inp: String): String {
-        var result = inp
-        var count = true
-        while ("*" in result) {
-            if (count) {
-                result = result.replaceFirst("*", "<i>")
-                count = false
-            } else {
-                result = result.replaceFirst("*", "</i>")
-                count = true
-            }
-        }
-        return result
-    }
-    fun remakeB(inp: String): String {
-        var result = inp
-        var count = true
-        while ("**" in result) {
-            if (count) {
-                result = result.replaceFirst("**", "<b>")
-                count = false
-            } else {
-                result = result.replaceFirst("**", "</b>")
-                count = true
-            }
-        }
-        return result
-    }
-
-    fun remakeS(inp: String): String {
-        var result = inp
-        var count = true
-        while ("~~" in result) {
-            if (count) {
-                result = result.replaceFirst("~~", "<s>")
-                count = false
-            } else {
-                result = result.replaceFirst("~~", "</s>")
-                count = true
-            }
-        }
-        return result
-    }
     writer.use {
-        writer.write("<html><body>")
+        writer.write("<html><body><p>")
+        var iflag = true
+        var bflag = true
+        var sflag = true
         for (i in 0 until strings.size - 1) {
-            val first = remakeS(remakeI(remakeB(strings[i])))
-            val second = remakeS(remakeI(remakeB(strings[i + 1])))
-            if (first.isNotEmpty()) {
-                if (second.isNotEmpty()) writer.write(first)
-                else writer.write("$first</p>")
+            var current = strings[i]
+            val second = strings[i + 1]
+            while ("**" in current) {
+                if (bflag) {
+                    current = current.replaceFirst("**", "<b>")
+                    bflag = false
+                } else {
+                    current = current.replaceFirst("**", "</b>")
+                    bflag = true
+                }
+            }
+            while ("*" in current) {
+                if (iflag) {
+                    current = current.replaceFirst("*", "<i>")
+                    iflag = false
+                } else {
+                    current = current.replaceFirst("*", "</i>")
+                    iflag = true
+                }
+            }
+            while ("~~" in current) {
+                if (sflag) {
+                    current = current.replaceFirst("~~", "<s>")
+                    sflag = false
+                } else {
+                    current = current.replaceFirst("~~", "</s>")
+                    sflag = true
+                }
+            }
+            if (current.isNotEmpty()) {
+                if (second.isNotEmpty()) writer.write(current)
+                else writer.write("$current</p>\n")
             } else {
-                if (second.isNotEmpty()) writer.write("<p>")
+                if (second.isNotEmpty()) writer.write("$current<p>")
+                else writer.write(current)
             }
         }
+
         writer.write("</body>\n</html>")
     }
 }
