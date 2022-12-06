@@ -262,12 +262,14 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val array = convert(n, base)
-    var result = ""
     if (n == 0) return "0"
-    for (i in 0 until array.size) {
-        if (array[i] > 9) result += 'a' + (array[i] - 10)
-        else result += array[i].toString()
+    val result = buildString {
+        for (i in 0 until array.size) {
+            if (array[i] > 9) append('a' + (array[i] - 10))
+            else append(array[i].toString())
+        }
     }
+
     return result
 }
 
@@ -300,41 +302,13 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val mass = listOf<String>(
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z"
-    )
     val new = str.reversed()
     var result = 0
     var current: Char
     for (i in 0 until new.length) {
         current = new[i]
         if (current.isDigit()) result += current.toString().toInt() * base.toDouble().pow(i).toInt()
-        else result += (mass.indexOf(current.toString()) + 10) * base.toDouble().pow(i).toInt()
+        else result += (current - 'a' + 10) * base.toDouble().pow(i).toInt()
     }
     return result
 }

@@ -66,12 +66,13 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun deleteMarked(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        if (line.isNotEmpty()) {
-            if (line[0].toString() != "_") writer.write(line + "\n")
-        } else writer.newLine()
+    writer.use {
+        for (line in File(inputName).readLines()) {
+            if (line.isNotEmpty()) {
+                if (!line.startsWith("_")) writer.appendLine(line)
+            } else writer.newLine()
+        }
     }
-    writer.close()
 }
 
 /**
@@ -84,10 +85,8 @@ fun deleteMarked(inputName: String, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val strings = File(inputName).readLines().toMutableList()
     val result = mutableMapOf<String, Int>()
-    for (i in 0 until strings.size) strings[i] = strings[i].uppercase()
-    val str = strings.joinToString("\n")
+    val str = File(inputName).readText().uppercase()
     for (elem in substrings) {
         var current = 0
         for (i in 0 until str.length - elem.length + 1) {

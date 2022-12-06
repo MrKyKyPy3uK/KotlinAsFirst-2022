@@ -82,7 +82,8 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val current = str.split(" ")
-    if (current.size != 3 || current[0].toIntOrNull() == null || current[2].toIntOrNull() == null) return ""
+
+    if (current.size != 3) return ""
     val months = listOf(
         "января",
         "февраля",
@@ -97,11 +98,17 @@ fun dateStrToDigit(str: String): String {
         "ноября",
         "декабря"
     )
+    val day = current[0].toIntOrNull()
+    val year = current[2].toIntOrNull()
     val second = months.indexOf(current[1]) + 1
-    return if (current[0].toInt() !in 0..daysInMonth(second, current[2].toInt()) || second == 0) ""
+    return if (day == null || year == null || day !in 0..daysInMonth(
+            second,
+            year
+        ) || second == 0
+    ) ""
     else String.format(
         "%s.%s.%s",
-        twoDigitStr(current[0].toInt()),
+        twoDigitStr(day),
         twoDigitStr(second),
         current[2]
     )
@@ -167,8 +174,9 @@ fun bestLongJump(jumps: String): Int {
     var maxim = 0
     for (elem in current) {
         if (elem !in listOf("%", "-")) {
-            if (elem.toIntOrNull() == null) return -1
-            else if (elem.toInt() > maxim) maxim = elem.toInt()
+            val elemInt = elem.toIntOrNull()
+            if (elemInt == null) return -1
+            else if (elemInt > maxim) maxim = elemInt
         }
     }
     return if (maxim == 0) -1
@@ -207,7 +215,9 @@ fun plusMinus(expression: String): Int {
         val first = inp[i].toIntOrNull()
         val second = inp[i + 1].toIntOrNull()
         if ((first == null && second == null) || (first != null && second != null)) throw IllegalArgumentException()
-        if ((inp[i].first().toString().toIntOrNull() == null || inp[i].last().toString().toIntOrNull() == null) && inp[i].length != 1) throw IllegalArgumentException()
+        if ((inp[i].first().toString().toIntOrNull() == null || inp[i].last().toString()
+                .toIntOrNull() == null) && inp[i].length != 1
+        ) throw IllegalArgumentException()
         if (first != null) {
             if (inp[i + 1] == "+") result += inp[i + 2].toInt()
             else if (inp[i + 1] == "-") result -= inp[i + 2].toInt()
