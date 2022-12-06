@@ -310,25 +310,26 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     fun remakeI(inp: String): String {
         val result = buildString {
             val mass = inp.split("*")
-            for (i in 0 until mass.size / 2 * 2) {
+            for (i in 0 until mass.size) {
                 append(mass[i])
-                if (i % 2 == 0) append("<i>")
-                else append("</i>")
+                if (i != mass.size - 1) {
+                    if (i % 2 == 0) append("<i>")
+                    else append("</i>")
+                }
             }
-            append(mass.last())
         }
         return result
     }
-
     fun remakeB(inp: String): String {
         val result = buildString {
             val mass = inp.split("**")
-            for (i in 0 until mass.size / 2 * 2) {
+            for (i in 0 until mass.size) {
                 append(mass[i])
-                if (i % 2 == 0) append("<b>")
-                else append("</b>")
+                if (i != mass.size - 1) {
+                    if (i % 2 == 0) append("<b>")
+                    else append("</b>")
+                }
             }
-            append(mass.last())
         }
         return result
     }
@@ -336,12 +337,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     fun remakeS(inp: String): String {
         val result = buildString {
             val mass = inp.split("~~")
-            for (i in 0 until mass.size / 2 * 2) {
+            for (i in 0 until mass.size) {
                 append(mass[i])
-                if (i % 2 == 0) append("<s>")
-                else append("</s>")
+                if (i != mass.size - 1) {
+                    if (i % 2 == 0) append("<s>")
+                    else append("</s>")
+                }
             }
-            append(mass.last())
         }
         return result
     }
