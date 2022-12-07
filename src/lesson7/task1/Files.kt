@@ -317,9 +317,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         var iflag = true
         var bflag = true
         var sflag = true
-        for (i in 0 until strings.size - 1) {
+        for (i in 0 until strings.size) {
             var current = strings[i]
-            val second = strings[i + 1]
             while ("**" in current) {
                 if (bflag) {
                     current = current.replaceFirst("**", "<b>")
@@ -369,7 +368,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 else writer.write(current)
             }
         }
-        writer.write("</p></body>\n</html>")
+        writer.write("</body>\n</html>")
     }
 }
 
