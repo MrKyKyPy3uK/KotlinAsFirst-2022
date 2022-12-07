@@ -307,7 +307,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var current: Char
     for (i in 0 until new.length) {
         current = new[i]
-        if (current.isDigit()) result += current.toString().toInt() * base.toDouble().pow(i).toInt()
+        if (current.isDigit()) result += current.digitToInt() * base.toDouble().pow(i).toInt()
         else result += (current - 'a' + 10) * base.toDouble().pow(i).toInt()
     }
     return result
@@ -445,8 +445,7 @@ fun russian(n: Int): String {
 
     if (n == 0) return "ноль"
 
-    var result = ""
-    result = when (n.toString().length) {
+    var result = when (n.toString().length) {
         1 -> one(n)
         2 -> two(n)
         3 -> three(n)

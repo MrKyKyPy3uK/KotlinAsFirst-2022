@@ -152,8 +152,6 @@ fun flattenPhoneNumber(phone: String): String {
         if (phone[i] !in listOf(' ', '-', '(', ')')) {
             if (phone[i].toString().toIntOrNull() == null) return ""
             else result += phone[i]
-            println(phone[i])
-            println(result)
         }
     }
     return result
@@ -215,8 +213,7 @@ fun plusMinus(expression: String): Int {
         val first = inp[i].toIntOrNull()
         val second = inp[i + 1].toIntOrNull()
         if ((first == null && second == null) || (first != null && second != null)) throw IllegalArgumentException()
-        if ((inp[i].first().toString().toIntOrNull() == null || inp[i].last().toString()
-                .toIntOrNull() == null) && inp[i].length != 1
+        if ((!inp[i].first().isDigit() || !inp[i].last().isDigit()) && inp[i].length != 1
         ) throw IllegalArgumentException()
         if (first != null) {
             if (inp[i + 1] == "+") result += inp[i + 2].toInt()

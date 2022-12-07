@@ -355,17 +355,15 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 else writer.write(current)
             }
              */
-            if (current.isNotEmpty() && flag) {
+            if (current.isNotBlank() && flag) {
                 writer.write("<p>$current")
                 flag = false
-            }
-            else if (current.isNotEmpty() && !flag) writer.write(current)
+            } else if (current.isNotBlank() && !flag) writer.write(current)
             else {
                 if (!flag) {
                     writer.write("</p>$current")
                     flag = true
-                }
-                else writer.write(current)
+                } else writer.write(current)
             }
         }
         writer.write("</body>\n</html>")
