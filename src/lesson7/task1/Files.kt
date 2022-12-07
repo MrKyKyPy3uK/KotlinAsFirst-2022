@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import ru.spbstu.wheels.out
+import ru.spbstu.wheels.uncheckedCast
 import java.io.File
 import kotlin.math.max
 
@@ -312,6 +313,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         var iflag = true
         var bflag = true
         var sflag = true
+        for (i in 0 until strings.size) {
+            strings[i] = strings[i].replace("\t", "")
+        }
         for (i in 0 until strings.size - 1) {
             var current = strings[i]
             val second = strings[i + 1]
@@ -346,11 +350,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 if (second.isNotEmpty()) writer.write(current)
                 else writer.write("$current</p>\n")
             } else {
-                if (second.isNotEmpty()) writer.write("$current<p>")
+                if (second.isNotEmpty()) writer.write("$current\n<p>")
                 else writer.write(current)
             }
         }
-
         writer.write("</body>\n</html>")
     }
 }
