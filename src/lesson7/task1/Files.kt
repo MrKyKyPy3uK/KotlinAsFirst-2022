@@ -309,11 +309,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val strings = File(inputName).readLines().toMutableList()
     strings.add("")
     writer.use {
+        var flag = true
         for (i in 0 until strings.size) {
             strings[i] = strings[i].replace("\n\t\n", "")
         }
-        if (strings[0].isNotEmpty()) writer.write("<html><body><p>")
-        else writer.write(("<html><body>"))
+        writer.write(("<html><body>"))
         var iflag = true
         var bflag = true
         var sflag = true
@@ -347,6 +347,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     sflag = true
                 }
             }
+            /*
             if (current.isNotEmpty()) {
                 if (second.isNotEmpty()) writer.write(current)
                 else writer.write("$current</p>\n")
@@ -354,8 +355,21 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 if (second.isNotEmpty()) writer.write("$current\n<p>")
                 else writer.write(current)
             }
+             */
+            if (current.isNotEmpty() && flag) {
+                writer.write("<p>$current")
+                flag = false
+            }
+            else if (current.isNotEmpty() && !flag) writer.write(current)
+            else {
+                if (!flag) {
+                    writer.write("</p>$current")
+                    flag = true
+                }
+                else writer.write(current)
+            }
         }
-        writer.write("</body>\n</html>")
+        writer.write("</p></body>\n</html>")
     }
 }
 
