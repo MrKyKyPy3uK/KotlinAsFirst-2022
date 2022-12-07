@@ -309,13 +309,14 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val strings = File(inputName).readLines().toMutableList()
     strings.add("")
     writer.use {
-        writer.write("<html><body><p>")
-        var iflag = true
-        var bflag = true
-        var sflag = true
         for (i in 0 until strings.size) {
             strings[i] = strings[i].replace("\n\t\n", "")
         }
+        if (strings[0].isNotEmpty()) writer.write("<html><body><p>")
+        else writer.write(("<html><body>"))
+        var iflag = true
+        var bflag = true
+        var sflag = true
         for (i in 0 until strings.size - 1) {
             var current = strings[i]
             val second = strings[i + 1]
