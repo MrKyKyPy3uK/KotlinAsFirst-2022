@@ -314,7 +314,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         var bflag = true
         var sflag = true
         for (i in 0 until strings.size) {
-            strings[i] = strings[i].replace("\t", "")
+            strings[i] = strings[i].replace("\n\t\n", "")
         }
         for (i in 0 until strings.size - 1) {
             var current = strings[i]
