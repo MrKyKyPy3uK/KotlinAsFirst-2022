@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import ru.spbstu.wheels.combineCompares
 import ru.spbstu.wheels.out
 import ru.spbstu.wheels.uncheckedCast
 import java.io.File
@@ -468,7 +469,52 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val strings = File(inputName).readLines().toMutableList()
+    fun countSpaces(string: String): Int {
+        var result = 0
+        for (elem in string) {
+            if (elem == ' ') result += 1
+            else return result
+        }
+        return result
+    }
+    writer.use {
+        writer.write("<html><body><p>")
+        val typeOfList = mutableListOf<String>()
+        var lastSpaces = -1
+        for (i in 0 until strings.size) {
+            val currentSpaces = countSpaces(strings[i])
+            var currentLine = strings[i].trimStart()
+            if (lastSpaces < currentSpaces) {
+                if (currentLine.startsWith("*")) {
+                    writer.write("<ul>")
+                    typeOfList.add("ul")
+                } else {
+                    writer.write("<ol>")
+                    typeOfList.add(("ol"))
+                }
+            }
+            if (lastSpaces > currentSpaces) {
+                writer.write("</li></${typeOfList.last()}></li>")
+                typeOfList.removeLast()
+            }
+            if (lastSpaces == currentSpaces) {
+                writer.write("</li>")
+            }
+            lastSpaces = currentSpaces
+            if (typeOfList.last() == "ol") {
+                currentLine = currentLine.substringAfter(".")
+            } else {
+                currentLine = currentLine.replaceFirst("*", "")
+            }
+            writer.write("<li>$currentLine")
+        }
+        for (i in 0 until typeOfList.size) {
+            writer.write("</li></${typeOfList[typeOfList.size - 1 -  i]}>")
+        }
+        writer.write("</p></body></html>")
+    }
 }
 
 /**

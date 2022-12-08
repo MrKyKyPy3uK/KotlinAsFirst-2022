@@ -232,7 +232,15 @@ fun plusMinus(expression: String): Int {
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    var currentIndex = 0
+    val inp = str.uppercase().split(" ")
+    for (i in 0 until inp.size - 1) {
+        if (inp[i] == inp[i + 1]) return currentIndex
+        currentIndex += 1 + inp[i].length
+    }
+    return -1
+}
 
 /**
  * Сложная (6 баллов)
@@ -245,7 +253,21 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    var maxTitle = ""
+    var maxVal = 0.0
+    if (description.isEmpty()) return ""
+    for (elem in description.split("; ")) {
+        val current = elem.split(" ")
+        if (current.size == 1 || current[1].toDoubleOrNull() == null) return ""
+        val num = current[1].toDouble()
+        if (num > maxVal) {
+            maxVal = num
+            maxTitle = current[0]
+        }
+    }
+    return maxTitle
+}
 
 /**
  * Сложная (6 баллов)
@@ -258,7 +280,22 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    val letters = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val numbers = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    var current = roman
+    var result = 0
+    for (i in letters.indices) {
+        val currentLetter = letters[i]
+        while (current.startsWith(currentLetter)) {
+            result += numbers[i]
+            println(result)
+            current = current.replaceFirst(currentLetter, "")
+        }
+    }
+    if (current.isEmpty()) return result
+    return -1
+}
 
 /**
  * Очень сложная (7 баллов)
