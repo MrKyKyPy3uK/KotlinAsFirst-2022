@@ -314,7 +314,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         for (i in 0 until strings.size) {
             strings[i] = strings[i].replace("\n\t\n", "")
         }
-        writer.write(("<html><body>"))
+        writer.write(("<html><body><p>"))
         var iflag = true
         var bflag = true
         var sflag = true
@@ -367,7 +367,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 } else writer.write(current)
             }
         }
-        writer.write("</body>\n</html>")
+        writer.write("</p></body></html>")
     }
 }
 
