@@ -309,8 +309,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val strings = File(inputName).readLines().toMutableList()
     writer.use {
-        if (strings.size == 1) {
-            writer.write("<html><body><p>${strings[0]}</p></body></html>")
+        if (strings.size == 0) {
+            writer.write("<html><body><p></p></body></html>")
         } else {
             strings.add("")
             var flag = true
