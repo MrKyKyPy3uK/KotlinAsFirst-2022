@@ -308,66 +308,70 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val strings = File(inputName).readLines().toMutableList()
-    strings.add("")
     writer.use {
-        var flag = true
-        for (i in 0 until strings.size) {
-            strings[i] = strings[i].replace("\n\t\n", "")
+        if (strings.size == 1) {
+            writer.write("<html><body><p>${strings[0]}</p></body></html>")
+        } else {
+            strings.add("")
+            var flag = true
+            for (i in 0 until strings.size) {
+                strings[i] = strings[i].replace("\n\t\n", "")
+            }
+            writer.write(("<html><body>"))
+            var iflag = true
+            var bflag = true
+            var sflag = true
+            for (i in 0 until strings.size) {
+                var current = strings[i]
+                while ("**" in current) {
+                    if (bflag) {
+                        current = current.replaceFirst("**", "<b>")
+                        bflag = false
+                    } else {
+                        current = current.replaceFirst("**", "</b>")
+                        bflag = true
+                    }
+                }
+                while ("*" in current) {
+                    if (iflag) {
+                        current = current.replaceFirst("*", "<i>")
+                        iflag = false
+                    } else {
+                        current = current.replaceFirst("*", "</i>")
+                        iflag = true
+                    }
+                }
+                while ("~~" in current) {
+                    if (sflag) {
+                        current = current.replaceFirst("~~", "<s>")
+                        sflag = false
+                    } else {
+                        current = current.replaceFirst("~~", "</s>")
+                        sflag = true
+                    }
+                }
+                /*
+                if (current.isNotEmpty()) {
+                    if (second.isNotEmpty()) writer.write(current)
+                    else writer.write("$current</p>\n")
+                } else {
+                    if (second.isNotEmpty()) writer.write("$current\n<p>")
+                    else writer.write(current)
+                }
+                 */
+                if (current.isNotBlank() && flag) {
+                    writer.write("<p>$current")
+                    flag = false
+                } else if (current.isNotBlank() && !flag) writer.write(current)
+                else {
+                    if (!flag) {
+                        writer.write("</p>$current")
+                        flag = true
+                    } else writer.write(current)
+                }
+            }
+            writer.write("</body></html>")
         }
-        writer.write(("<html><body>"))
-        var iflag = true
-        var bflag = true
-        var sflag = true
-        for (i in 0 until strings.size) {
-            var current = strings[i]
-            while ("**" in current) {
-                if (bflag) {
-                    current = current.replaceFirst("**", "<b>")
-                    bflag = false
-                } else {
-                    current = current.replaceFirst("**", "</b>")
-                    bflag = true
-                }
-            }
-            while ("*" in current) {
-                if (iflag) {
-                    current = current.replaceFirst("*", "<i>")
-                    iflag = false
-                } else {
-                    current = current.replaceFirst("*", "</i>")
-                    iflag = true
-                }
-            }
-            while ("~~" in current) {
-                if (sflag) {
-                    current = current.replaceFirst("~~", "<s>")
-                    sflag = false
-                } else {
-                    current = current.replaceFirst("~~", "</s>")
-                    sflag = true
-                }
-            }
-            /*
-            if (current.isNotEmpty()) {
-                if (second.isNotEmpty()) writer.write(current)
-                else writer.write("$current</p>\n")
-            } else {
-                if (second.isNotEmpty()) writer.write("$current\n<p>")
-                else writer.write(current)
-            }
-             */
-            if (current.isNotBlank() && flag) {
-                writer.write("<p>$current")
-                flag = false
-            } else if (current.isNotBlank() && !flag) writer.write(current)
-            else {
-                if (!flag) {
-                    writer.write("</p>$current")
-                    flag = true
-                } else writer.write(current)
-            }
-        }
-        writer.write("</body></html>")
     }
 }
 
