@@ -313,7 +313,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             writer.write("<html><body><p></p></body></html>")
         } else {
             strings.add("")
-            var flag = true
+            var isClosed = true
             for (i in 0 until strings.size) {
                 strings[i] = strings[i].replace("\n\t\n", "")
             }
@@ -359,14 +359,14 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     else writer.write(current)
                 }
                  */
-                if (current.isNotBlank() && flag) {
+                if (current.isNotBlank() && isClosed) {
                     writer.write("<p>$current")
-                    flag = false
-                } else if (current.isNotBlank() && !flag) writer.write(current)
+                    isClosed = false
+                } else if (current.isNotBlank() && !isClosed) writer.write(current)
                 else {
-                    if (!flag) {
+                    if (!isClosed) {
                         writer.write("</p>$current")
-                        flag = true
+                        isClosed = true
                     } else writer.write(current)
                 }
             }
@@ -474,7 +474,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val strings = File(inputName).readLines().toMutableList()
+    val strings = File(inputName).readLines()
     fun countSpaces(string: String): Int {
         var result = 0
         for (elem in string) {
