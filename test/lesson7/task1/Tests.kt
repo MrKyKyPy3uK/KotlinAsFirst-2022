@@ -441,4 +441,9 @@ Basic, Ruby, Swift.
 
         File("temp.txt").delete()
     }
+
+    @Test
+    fun foo() {
+        assertEquals(mapOf("f1" to listOf(2, 5, 1), "f2" to listOf(4, 3), "f3" to listOf(6)), foo("input/inputExam.txt", mapOf("f1" to 3, "f2" to 4, "f3" to 10)))
+    }
 }

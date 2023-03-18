@@ -130,4 +130,3 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = initial * (1 + per
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
 fun numberRevert(number: Int): Int = number % 10 * 100 + (number % 100) / 10 * 10 + number / 100
-

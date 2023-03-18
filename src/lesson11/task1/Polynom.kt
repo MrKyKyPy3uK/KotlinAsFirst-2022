@@ -2,6 +2,15 @@
 
 package lesson11.task1
 
+import lesson4.task1.polynom
+import ru.spbstu.wheels.NullableMonad.filter
+import ru.spbstu.wheels.defaultCompareTo
+import ru.spbstu.wheels.toRecordString
+import java.sql.PseudoColumnUsage
+import kotlin.math.pow
+import kotlin.math.max
+import kotlin.math.min
+
 /**
  * Класс "полином с вещественными коэффициентами".
  *
@@ -20,17 +29,29 @@ package lesson11.task1
  * Старшие коэффициенты, равные нулю, игнорировать, например Polynom(0.0, 0.0, 5.0, 3.0) соответствует 5x+3
  */
 class Polynom(vararg coeffs: Double) {
+    private var current = coeffs
+    init {
+        if (current.isNotEmpty()) {
+            val firstNotZero = current.indexOfFirst { it != 0.0 }
+            if (firstNotZero != -1) {
+                current = current.copyOfRange(firstNotZero, current.size)
+                current.reverse()
+            }
+        } else {
+            current = doubleArrayOf(0.0)
+        }
+    }
+
 
     /**
      * Геттер: вернуть значение коэффициента при x^i
      */
-    fun coeff(i: Int): Double = TODO()
+    fun coeff(i: Int): Double = current.getOrNull(i) ?: throw NoSuchElementException()
 
     /**
      * Расчёт значения при заданном x
      */
-    fun getValue(x: Double): Double = TODO()
-
+    fun getValue(x: Double): Double = current.indices.sumOf { x.pow(it) * coeff(it) }
     /**
      * Степень (максимальная степень x при ненулевом слагаемом, например 2 для x^2+x+1).
      *
@@ -38,27 +59,46 @@ class Polynom(vararg coeffs: Double) {
      * Слагаемые с нулевыми коэффициентами игнорировать, т.е.
      * степень 0x^2+0x+2 также равна 0.
      */
-    fun degree(): Int = TODO()
+    fun degree(): Int = max(0, current.size - 1)
 
     /**
      * Сложение
      */
-    operator fun plus(other: Polynom): Polynom = TODO()
+    operator fun plus(other: Polynom): Polynom {
+        val result = DoubleArray(maxOf(current.size, other.current.size), { 0.0 })
+        for (i in 0 until maxOf(current.size, other.current.size)) {
+            if (i < current.size) result[i] += current[i]
+            if (i < other.current.size) result[i] += other.current[i]
+        }
+        return Polynom(*result.reversed().toDoubleArray())
+    }
 
     /**
      * Смена знака (при всех слагаемых)
      */
-    operator fun unaryMinus(): Polynom = TODO()
+    operator fun unaryMinus(): Polynom {
+        val result = DoubleArray(current.size) {0.0}
+        for (i in current.indices) result[i] = -current[i]
+        return Polynom(*result.reversed().toDoubleArray())
+    }
 
     /**
      * Вычитание
      */
-    operator fun minus(other: Polynom): Polynom = TODO()
+    operator fun minus(other: Polynom): Polynom = plus(other.unaryMinus())
 
     /**
      * Умножение
      */
-    operator fun times(other: Polynom): Polynom = TODO()
+    operator fun times(other: Polynom): Polynom {
+        val result = DoubleArray((current.size + other.current.size), {0.0})
+        for (first in 0 until current.size) {
+            for (second in 0 until other.current.size) {
+                result[first + second] += current[first] * other.current[second]
+            }
+        }
+        return Polynom(*result.reversed().toDoubleArray())
+    }
 
     /**
      * Деление
@@ -68,7 +108,74 @@ class Polynom(vararg coeffs: Double) {
      *
      * Если A / B = C и A % B = D, то A = B * C + D и степень D меньше степени B
      */
-    operator fun div(other: Polynom): Polynom = TODO()
+    operator fun div(other: Polynom): Polynom {
+        /*
+        var result = DoubleArray(degree() - other.degree() + 1) {0.0}
+        var firstArr = Polynom(*current)
+        var funcResult = mutableListOf<Double>()
+        do {
+            var tempArr: DoubleArray
+            if (funcResult.isEmpty()) {
+                funcResult = current.toMutableList()
+                firstArr = Polynom(*current)
+            } else {
+                firstArr = Polynom(*funcResult.toDoubleArray())
+                funcResult = mutableListOf()
+            }
+            println("---" + funcResult.toList())
+            tempArr = (List(firstArr.degree() - other.degree()) { 0.0 } + other.current.toList()).toDoubleArray()
+            tempArr.forEach { it * firstArr.degree() / other.degree().toDouble() }
+            println("->>" + tempArr.toList())
+            if (funcResult.isEmpty()) {
+                for (i in tempArr.indices) {
+                    funcResult.add((firstArr.current[i] - tempArr[i]))
+                }
+            }
+            funcResult.reverse()
+            val firstNotZero = funcResult.indexOfFirst { it != 0.0 }
+            if (firstNotZero != -1) {
+                funcResult = funcResult.toDoubleArray().copyOfRange(firstNotZero, funcResult.size).toMutableList()
+            }
+            funcResult.reverse()
+            println(firstArr.degree().toString() + "---" + other.degree())
+            println(firstArr.current.toList())
+            println(tempArr.toList())
+            println("---" + funcResult.toList())
+            result[firstArr.degree() - other.degree()] = firstArr.coeff(firstArr.degree()) / other.coeff(other.degree())
+            println("res = " + result.toList())
+        } while (funcResult.size >= other.current.size)
+        return Polynom(*result.reversed().toDoubleArray())
+        */
+        fun oneDiv(first: Polynom, second: Polynom): Triple<Polynom, Double, Int> {
+            println("First = " + first.current.toList())
+            println("Second = " + second.current.toList())
+            val firstDiv = first.current.toList()
+            val secondDiv = List(first.degree() - second.degree()) {0.0} + second.current.toList()
+            val result = MutableList<Double>(first.degree()) {0.0}
+            println("F " + firstDiv)
+            secondDiv.forEach { it * (first.coeff(first.degree()) / second.coeff(second.degree())) }
+            for (i in 0 until secondDiv.size - 1) {
+                result[i] = firstDiv[i] - secondDiv[i]
+            }
+            if (firstDiv.size == second.current.size && firstDiv.size == 1) {
+                result.add(firstDiv[0] - secondDiv[0])
+            }
+            println(result.toList())
+            return Triple(Polynom(*result.reversed().toDoubleArray()), first.coeff(first.degree()) / second.coeff(second.degree()), first.degree() - second.degree())
+        }
+        var ost = this
+        var result = MutableList<Double>(this.degree() - other.degree() + 1) {0.0}
+        do {
+            println(result.toList())
+            var currPol = oneDiv(ost, other)
+            result[currPol.third] = currPol.second
+            ost = currPol.first
+            println("Other = " + other.current.size)
+            println("Ost = " + ost.current.size)
+        } while (ost.current.size >= other.current.size || (ost.current.size > 1 && ost.current[0] != 0.0))
+        println(result.toList())
+        return Polynom(*result.reversed().toDoubleArray())
+    }
 
     /**
      * Взятие остатка
@@ -85,3 +192,4 @@ class Polynom(vararg coeffs: Double) {
      */
     override fun hashCode(): Int = TODO()
 }
+

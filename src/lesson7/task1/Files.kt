@@ -4,8 +4,11 @@ package lesson7.task1
 
 import ru.spbstu.wheels.combineCompares
 import ru.spbstu.wheels.out
+import ru.spbstu.wheels.toMutableMap
 import ru.spbstu.wheels.uncheckedCast
 import java.io.File
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import kotlin.math.max
 
 // Урок 7: работа с файлами
@@ -587,3 +590,46 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
 
+fun foo(input: String, methods: Map<String, Int>): MutableMap<String, List<Int>> {
+    val summarize = mutableMapOf<String, Int>()
+    val result = mutableMapOf<String, Int>()
+    val names = mutableListOf<String>()
+    for (elem in File(input).readLines().toSet()) {
+        if (!elem.matches(Regex("""(\d+\s\|\s\w+)"""))) throw IllegalArgumentException()
+        val current = elem.split(" | ")
+        if (current[1] !in names) names.add(current[1])
+        if (current[1] !in summarize.keys) summarize[current[1]] = 1
+        else summarize[current[1]] = summarize[current[1]]!! + 1
+    }
+    for (elem in methods.keys) {
+        if (elem in summarize.keys) {
+            result[elem] = (summarize[elem]!! * 100 / methods[elem]!!.toDouble()).toInt()
+            if (summarize[elem]!! > methods[elem]!!) throw IllegalStateException()
+        } else result[elem] = 0
+    }
+    print(summarize)
+    print(methods)
+    println(result)
+    println(names)
+
+    val res = List(summarize.size) { mutableListOf<Int>() }
+    val final = mutableMapOf<String, List<Int>>()
+    for (elem in File(input).readLines()) {
+        val currentFunc = elem.split(" | ")
+        res[names.indexOf(currentFunc[1])].add(currentFunc[0].toInt())
+    }
+    var i = 0
+    for (mas in res) {
+        var howMany = mutableMapOf<Int, Int>()
+        for (elem in mas) {
+            if (elem !in howMany.keys) howMany[elem] = 1
+            else howMany[elem] = howMany[elem]!! + 1
+        }
+        howMany = howMany.toList().sortedBy { (k, v) -> v }.reversed().toMutableMap()
+        final[names[i]] = howMany.keys.toList()
+        i += 1
+    }
+    println(res)
+    println(final)
+    return final
+}
