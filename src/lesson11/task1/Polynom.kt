@@ -2,14 +2,9 @@
 
 package lesson11.task1
 
-import lesson4.task1.polynom
-import ru.spbstu.wheels.NullableMonad.filter
-import ru.spbstu.wheels.defaultCompareTo
-import ru.spbstu.wheels.toRecordString
-import java.sql.PseudoColumnUsage
+
 import kotlin.math.pow
 import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Класс "полином с вещественными коэффициентами".
@@ -167,6 +162,6 @@ class Polynom(vararg coeffs: Double) {
     /**
      * Получение хеш-кода
      */
-    override fun hashCode(): Int = TODO()
+    override fun hashCode(): Int = current.contentHashCode()
 }
 
